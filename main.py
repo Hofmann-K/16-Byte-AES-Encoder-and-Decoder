@@ -103,33 +103,37 @@ def ask_operation():
         else:
             print("Invalid operation. Please choose 'encode' or 'decode'.") # Error handel in case of misinput
 
-# main user interations
 if __name__ == "__main__":
     print("AES Encryption and Decryption")
 
-    operation = ask_operation()
+    while True:
+        operation = ask_operation()
 
-    if operation == 'encode':
-        # Get user input for plaintext and key
-        plaintext = input_data("Enter the input data (16 bytes): ")
-        encryption_key = input_data("Enter the encryption key (16 bytes): ")
+        if operation == 'encode':
+            # Get user input for plaintext and key
+            plaintext = input_data("Enter the input data (16 bytes): ")
+            encryption_key = input_data("Enter the encryption key (16 bytes): ")
 
-        # Encode the plaintext and key
-        plaintext_bytes = plaintext.encode('utf-8')
-        key_bytes = encryption_key.encode('utf-8')
+            # Encode the plaintext and key
+            plaintext_bytes = plaintext.encode('utf-8')
+            key_bytes = encryption_key.encode('utf-8')
 
-        # Encrypt the data
-        encrypted_data = aes_encrypt(plaintext_bytes, key_bytes)
-        print("Encrypted Data (in hexadecimal):", encrypted_data.hex())
-    else:
-        # Get user input for encrypted data and key
-        encrypted_data_hex = input("Enter the encrypted data (in hexadecimal): ")
-        decryption_key = input_data("Enter the decryption key (16 bytes): ")
+            # Encrypt the data
+            encrypted_data = aes_encrypt(plaintext_bytes, key_bytes)
+            print("Encrypted Data (in hexadecimal):", encrypted_data.hex())
+        else:
+            # Get user input for encrypted data and key
+            encrypted_data_hex = input("Enter the encrypted data (in hexadecimal): ")
+            decryption_key = input_data("Enter the decryption key (16 bytes): ")
 
-        # Convert the hex string to bytes
-        encrypted_data = bytes.fromhex(encrypted_data_hex)
-        key_bytes = decryption_key.encode('utf-8')
+            # Convert the hex string to bytes
+            encrypted_data = bytes.fromhex(encrypted_data_hex)
+            key_bytes = decryption_key.encode('utf-8')
 
-        # Decrypt the data
-        decrypted_data = aes_decrypt(encrypted_data, key_bytes)
-        print("Decrypted Data:", decrypted_data.decode('utf-8', errors='ignore'))
+            # Decrypt the data
+            decrypted_data = aes_decrypt(encrypted_data, key_bytes)
+            print("Decrypted Data:", decrypted_data.decode('utf-8', errors='ignore'))
+
+        another_operation = input("Do you want to perform another operation? (yes/no): ").strip().lower()
+        if another_operation != 'yes':
+            break
