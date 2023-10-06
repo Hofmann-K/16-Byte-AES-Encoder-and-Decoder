@@ -12,6 +12,8 @@ Rcon = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36]
 
 # AES SubBytes transformation
 def sub_bytes(state):
+    # Apply the SubBytes transformation by substituting each byte in the state
+    # with its corresponding value from the S-box
     for i in range(16):
         state[i] = s_box[state[i]]
     return state
@@ -21,6 +23,7 @@ def shift_rows(state):
     new_state = [0] * 16
     for i in range(4):
         for j in range(4):
+            # Rearrange bytes in each row according to the AES specification (Based on info packet)
             new_state[i + j * 4] = state[(i + j * 4 + (i * 4)) % 16]
     return new_state
 
@@ -30,24 +33,25 @@ def Xtime(a, b):
     result = 0
     for _ in range(8):
         if b & 0x01:
-            result ^= a
+            result ^= a # ^= represents exclusive or operator or XOR
         high_bit_set = a & 0x80
         a <<= 1
         if high_bit_set:
             a ^= 0x1B  # XOR with 0x1B if high bit was set
-        b >>= 1
+        b >>= 1 # >> is a bit shift right operator
     return result & 0xFF
 
 # AES MixColumns transformation
 def mix_columns(state):
     new_state = [0] * 16
-    mix_columns_matrix = [
+    mix_columns_matrix = [ # Given in info packet of the project
         0x02, 0x03, 0x01, 0x01,
         0x01, 0x02, 0x03, 0x01,
         0x01, 0x01, 0x02, 0x03,
         0x03, 0x01, 0x01, 0x02
     ]
 
+    # Applying the MixColumns transformation to the state matrix
     for col in range(4):
         for row in range(4):
             result = 0
@@ -66,6 +70,7 @@ def inv_mix_columns(state):
         0x0B, 0x0D, 0x09, 0x0E
     ]
 
+    # Applying the MixColumns transformation to the state matrix
     for col in range(4):
         for row in range(4):
             result = 0
@@ -76,6 +81,7 @@ def inv_mix_columns(state):
 
 # AES AddRoundKey transformation
 def add_round_key(state, key):
+    # XOR each byte of the state with the corresponding byte of the key
     for i in range(16):
         state[i] ^= key[i]
     return state
@@ -133,6 +139,7 @@ def inv_shift_rows(state):
     new_state = [0] * 16
     for i in range(4):
         for j in range(4):
+            # Rearrange bytes in each row inversely
             new_state[i + j * 4] = state[(i + j * 4 - (i * 4)) % 16]
     return new_state
 
